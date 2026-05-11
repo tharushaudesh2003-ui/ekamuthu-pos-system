@@ -33,3 +33,81 @@ document.addElementListner("DOMContentLoaded", function() {
         }
     });
 });
+
+let cart = [];
+
+const cartBody = document.getElementById("cartBody");
+
+function addSampleProduct() {
+
+    const product = {
+        id: Date.now(),
+        name: "Anchor Milk Powder",
+        price: 1250,
+        qty: 1
+    };
+
+    cart.push(product);
+
+    renderCart();
+}
+
+function renderCart() {
+
+    cartBody.innerHTML = "";
+
+    let grandTotal = 0;
+
+    cart.forEach((item, index) => {
+
+        const subtotal = item.price * item.qty;
+
+        grandTotal += subtotal;
+
+        cartBody.innerHTML += `
+            <tr>
+                <td>${item.name}</td>
+
+                <td>${item.price.toFixed(2)}</td>
+
+                <td>
+                    <input
+                        type="number"
+                        min="1"
+                        value="${item.qty}"
+                        onchange="updateQty(${index}, this.value)"
+                        class="qty-input">
+                </td>
+
+                <td>${subtotal.toFixed(2)}</td>
+
+                <td>
+                    <button class="btn danger small"
+                        onclick="removeItem(${index})">
+                        Remove
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.querySelector(".summary-row.total span:last-child")
+        .innerText = "Rs. " + grandTotal.toFixed(2);
+}
+
+function updateQty(index, qty) {
+
+    cart[index].qty = parseInt(qty);
+
+    renderCart();
+}
+
+function removeItem(index) {
+
+    cart.splice(index, 1);
+
+    renderCart();
+}
+
+document.querySelector(".primary")
+    .addEventListener("click", addSampleProduct);
